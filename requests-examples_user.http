@@ -1,0 +1,51 @@
+# примеры API-запросов
+
+@baseUrl = http://127.0.0.1:8080
+
+# Регистрация
+POST {{baseUrl}}/users/
+Content-Type: application/json
+
+{
+  "name": "",
+  "surename": "",
+  "email": "",
+  "password": ""
+}
+
+###
+
+# Авторизация
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": ""
+}
+
+###
+
+# получение пользователя
+GET {{baseUrl}}/users/<user_id>
+Content-Type: application/json
+Token: <token>
+###
+
+# обновление пользователя
+PATCH {{baseUrl}}/users/<user_id>
+Content-Type: application/json
+Token: <token>
+
+{
+  "email": ""
+}
+
+###
+
+# удаление пользователя
+DELETE {{baseUrl}}/users/<user_id>
+Content-Type: application/json
+Token: <token>
+
+###

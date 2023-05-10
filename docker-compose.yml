@@ -1,0 +1,51 @@
+version: '3.9'
+
+networks:
+  dev_network:
+
+services:
+
+  db:
+    image: postgres:14.3-alpine3.15
+    ports:
+      - "5431:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB}
+
+    networks:
+      dev_network:
+        aliases:
+          - ${PG_HOST}
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+
+  app:
+    build:
+      context: .
+    restart: unless-stopped
+    environment:
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_HOST: ${PG_HOST}
+      PG_PORT: ${PG_PORT}
+      PG_DB: ${PG_DB}
+      WAIT_HOSTS: ${PG_HOST}:${PG_PORT}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      dev_network:
+        aliases:
+          - ads
+    volumes:
+      - ./app:/app
